@@ -146,6 +146,7 @@ def main():
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
     bomb = Bomb((255, 0, 0), 10)
+    bomb2 = Bomb((255, 0, 0), 20)
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -168,6 +169,7 @@ def main():
         bird.update(key_lst, screen)
         # beam.update(screen)   
         bomb.update(screen)
+        bomb2.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
