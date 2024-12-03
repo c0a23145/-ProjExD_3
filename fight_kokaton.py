@@ -48,6 +48,7 @@ class Bird:
         (+5, +5): pg.transform.rotozoom(img, -45, 0.9),  # 右下
     }
 
+
     def __init__(self, xy: tuple[int, int]):
         """
         こうかとん画像Surfaceを生成する
@@ -57,6 +58,7 @@ class Bird:
         self.rct: pg.Rect = self.img.get_rect()
         self.rct.center = xy
 
+
     def change_img(self, num: int, screen: pg.Surface):
         """
         こうかとん画像を切り替え，画面に転送する
@@ -65,6 +67,7 @@ class Bird:
         """
         self.img = pg.transform.rotozoom(pg.image.load(f"fig/{num}.png"), 0, 0.9)
         screen.blit(self.img, self.rct)
+
 
     def update(self, key_lst: list[bool], screen: pg.Surface):
         """
@@ -84,7 +87,7 @@ class Bird:
             self.img = __class__.imgs[tuple(sum_mv)]
         screen.blit(self.img, self.rct)
 
-
+        
 class Beam:
     """
     こうかとんが放つビームに関するクラス
@@ -99,6 +102,7 @@ class Beam:
          self.rct.centery = bird.rct.centery #こうかとんの中心座標
          self.rct.left = bird.rct.right #こうかとんの右座標
          self.vx, self.vy = +5, 0
+
 
     def update(self, screen: pg.Surface):
         """
@@ -127,6 +131,7 @@ class Bomb:
         self.rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
         self.vx, self.vy = +5, +5
 
+
     def update(self, screen: pg.Surface):
         """
         爆弾を速度ベクトルself.vx, self.vyに基づき移動させる
@@ -140,6 +145,7 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+
 class Score:
     def __init__(self, scores):
         """
@@ -150,6 +156,7 @@ class Score:
         self.img = self.fonto.render("スコア:" + str(self.scores), 0, (0, 0, 250))
         self.rct = self.img.get_rect()
         self.rct.center = (100, HEIGHT - 50)
+
 
     def update(self, screen: pg.Surface):
         """
@@ -180,6 +187,7 @@ class Explosion:
         self.rct = self.img.get_rect()
         self.rct.center = center
         self.life =  20
+
 
     def update(self, screen: pg.Surface):
         """
@@ -225,7 +233,6 @@ def main():
                 time.sleep(1)
 
                 return
-        
         
         for i, bomb in enumerate(bombs):
             for beam in multibeam:
