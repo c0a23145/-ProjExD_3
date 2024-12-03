@@ -162,6 +162,37 @@ class Score:
         screen.blit(self.img, self.rct)
 
 
+class Explosion:
+    def __init__(self, center: tuple[int, int]):
+        """
+        爆発エフェクトの初期化
+        爆発エフェクトの生成
+        """
+        img_base = pg.image.load(f"fig/explosion.gif")
+        self.images = [
+            img_base,
+            pg.transform.flip(img_base, True, False),
+            pg.transform.flip(img_base, False, True),
+            pg.transform.flip(img_base, True, True),
+        ]
+        self.index = 0
+        self.img = self.images[self.index]
+        self.rct = self.img.get_rect()
+        self.rct.center = center
+        self.life =  20
+
+    def update(self, screen: pg.Surface):
+        """
+        爆発エフェクトの更新と描画
+        引数 screen: 画面Surface
+        """
+        self.life -= 1
+        if self.life > 0:
+            self.index = (self.index + 1) % len(self.images)  # アニメーション切り替え
+            self.img = self.images[self.index]
+            screen.blit(self.img, self.rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -170,6 +201,7 @@ def main():
     bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)] # Beam(bird)
     multibeam = [] # ビームインスタンスの空リスト
+    Exp = [] #爆発エフェクトの空リスト
     score = Score(0) #スコア関数呼び出し
     clock = pg.time.Clock()
     tmr = 0
@@ -200,6 +232,8 @@ def main():
                 if beam.rct.colliderect(bomb.rct):  # ビームが爆弾を撃ち落としたら
                     beam = None
                     bombs[i] = None
+                    Exp.append(Explosion(bomb.rct.center))
+
                     bird.change_img(6, screen)
                     score.scores += 1
                     pg.display.update()
@@ -209,14 +243,19 @@ def main():
         # beam.update(screen) 
         bombs = [bomb for bomb in bombs if bomb is not None]  
         multibeam = [beam for beam in multibeam if check_bound(beam.rct) == (True, True)]
+        
+        Exp = [exp for exp in Exp if exp.life > 0]  # lifeが0以上のものだけ残す
         for bomb in bombs: 
             bomb.update(screen)
         # bomb2.update(screen)
         for beam in multibeam:
             beam.update(screen)
         score.update(screen)
-        pg.display.update()
+
         tmr += 1
+        for exp in Exp:
+            exp.update(screen)
+        pg.display.update()
         clock.tick(50)
 
 
